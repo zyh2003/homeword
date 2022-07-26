@@ -32,38 +32,32 @@
         // trigger: 'axis',
         // triggerOn : 'click'
       },
-      legend: {
-        // data: ['销量']
-      },
       //类目轴  直角坐标系中的x轴
       xAxis: {
-        data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+        data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
       },
       //数值轴  直角坐标系中的y轴
-      yAxis: {}, 
+      yAxis: {},
       // 系列列表  每个系列通过type决定自己的图表类型
       series: [
         {
-          name: '销量',
-          type: 'bar',//bar代表柱状图
-          markPoint: {
+          name: '康师傅销量',
+          type: 'line',
+          data: [3000, 2800, 900, 1000, 800, 700, 1400, 1300, 900, 1000, 800, 600],
+
+          markArea: {
             data: [
-              { type: 'max', name: '最大值' },
-              { type: 'min', name: '最小值' },
+              [
+                { xAxis: '1月' },
+                { xAxis: '2月' }
+              ],
+              [
+                { xAxis: '7月' },
+                { xAxis: '9月' }
+              ]
             ]
           },
-          markLine: {
-            data: [
-              { type: 'average', name: '平均值' }
-            ]
-          },
-          label: {
-            show: true,
-            rotate: 60,
-            position: 'top'
-          },
-          barWidth: '30%',
-          data: [5, 20, 36, 10, 10, 20]
+          smooth: true
         }
       ]
     };
