@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- 补全视口标签 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+    content="width=device-width,user-scalable=no, initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+  <title>市井皆是温柔,弄堂藏匿浪漫</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+  <div id="main" style="width: 1000px;height:1000px"></div>
+  <script>
+    var myChart = echarts.init(document.getElementById('main'));
+    var option = {}
+    $.get('json/province/anhui.json', function (res) {
+      console.log(res);
+      echarts.registerMap("anhui", res);
+      // 设置图表的配置项
+      let option = {
+        geo: {
+          type: "map", //设置图表类型
+          map: "anhui", //需与上面echarts.registerMap方法的第一个参数保持一致
+          roam: true, //设置缩放和拖动
+          // // 里面的文字显示
+          label: {
+            show: true,
+          },
+          zoom: 1, // 设置初始化的缩放比例
+          // center: [116.405285, 39.904989], //设置地图中心点
+        },
+      };
+      //生成图表（地图）
+      myChart.setOption(option);
+    })
+
+  </script>
+</body>
+
+</html>

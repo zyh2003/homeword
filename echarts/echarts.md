@@ -1,4 +1,4 @@
-# echarts
+# echarts 基础
 
 ## 1. series 类型
 
@@ -9,13 +9,13 @@
 
 ## 2. 七大图表
 
-- 图表 1: 柱状图
-- 图表 2: 折线图
-- 图表 3: 散点图
-- 图表 4: 饼图
-- 图表 5: 地图
-- 图表 6: 雷达图
-- 图表 7: 仪表图
+- 图表 1: 柱状图 bar
+- 图表 2: 折线图 line
+- 图表 3: 散点图 scatter/effectScatter
+- 图表 4: 饼图 pie
+- 图表 5: 地图 map
+- 图表 6: 雷达图 radar
+- 图表 7: 仪表图 gauge
 
 ## 3. Echarts 实现布置
 
@@ -111,12 +111,6 @@ https://echarts.apache.org/zh/option.html#grid
   - start ：数据窗口范围的起始百分比
   - end ：数据窗口范围的结束百分比
 
-#### 3.4.4 直角坐标系图表特点
-
-> 柱状图描述的是分类数据，呈现的是每一个分类中有多少
-> 折线图使用场景常用来分析数据随时间的变化趋势
-> 散点图可以帮助我们推断出不同纬度数据之间的相关性，可以用在地图上的标注上
-
 ## 4. 通用配置
 
 ### 4.1. 标题 title
@@ -167,5 +161,185 @@ https://echarts.apache.org/zh/option.html#toolbox
 
 - legend 中的 data 是一个数组
 - legend 中的 data 的值需要和 series 数组中某组数据的 name 值一致
+
 ## 5. 饼图
-  - 显示数值
+
+- 显示数值 label.formatter
+- 圆环 radius
+  > 饼图的半径 可以直接设置
+  > 也可以用百分比百分比是根据盒子宽度和高度较小的那一部分的一半进行百分比设置
+  > 设置数组内环和外环第 0 个元素是内环的半径，第 1 个元素是外环半径
+- 南丁格尔图
+  > roseType : radius 相当于占比越高就越大 每个半径都是不同的
+- 选中效果
+  > selectedMode : 'single' 点击选中偏离原点，点击下一个上一个会回到原点 multiple 点击选中偏离原点，点击俩下回到原点
+  > selectedOffset 偏离的距离
+
+## 6. 地图
+
+https://echarts.apache.org/zh/option.html#geo
+https://echarts.apache.org/zh/option.html#series-map
+
+> 使用方式：
+>
+> - 百度地图 API
+>   - 需要申请百度地图 ak
+> - 矢量地图 map
+>   - 需要准备矢量地图数据
+>     - 缩放拖动：roam 值为 true
+>     - 名称显示：label show 值为 true
+>     - 初始化缩放比例：zoom 默认为 1
+>     - 中心点：center []
+>     - visualMap 旁边出现滚动条
+>       - calculable : true 滚动条可以滑动
+>     - geoIndex : 可以指定一个 geo 连接
+>     - 让散点图使用地图坐标系统 coordinateSystem ：geo
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- 补全视口标签 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width,user-scalable=no, initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0"
+    />
+    <title>市井皆是温柔,弄堂藏匿浪漫</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  </head>
+
+  <body>
+    <div
+      id="main"
+      style="width: 600px;height:400px;border: 1px solid #ccc;"
+    ></div>
+    <script>
+      var myChart = echarts.init(document.getElementById("main"));
+      var airData = [
+        { name: "北京", value: 39.92 },
+        { name: "天津", value: 39.13 },
+        { name: "上海", value: 31.22 },
+        { name: "重庆", value: 66 },
+        { name: "河北", value: 147 },
+        { name: "河南", value: 113 },
+        { name: "云南", value: 25.04 },
+        { name: "辽宁", value: 50 },
+        { name: "黑龙江", value: 114 },
+        { name: "湖南", value: 175 },
+        { name: "安徽", value: 117 },
+        { name: "山东", value: 92 },
+        { name: "新疆", value: 84 },
+        { name: "江苏", value: 67 },
+        { name: "浙江", value: 84 },
+        { name: "江西", value: 96 },
+        { name: "湖北", value: 273 },
+        { name: "广西", value: 59 },
+        { name: "甘肃", value: 99 },
+        { name: "山西", value: 39 },
+        { name: "内蒙古", value: 58 },
+        { name: "陕西", value: 61 },
+        { name: "吉林", value: 51 },
+        { name: "福建", value: 29 },
+        { name: "贵州", value: 71 },
+        { name: "广东", value: 38 },
+        { name: "青海", value: 57 },
+        { name: "西藏", value: 24 },
+        { name: "四川", value: 58 },
+        { name: "宁夏", value: 52 },
+        { name: "海南", value: 54 },
+        { name: "台湾", value: 88 },
+        { name: "香港", value: 66 },
+        { name: "澳门", value: 77 },
+        { name: "南海诸岛", value: 55 },
+      ];
+      var scatterData = [{ value: [117.283042, 31.86119] }];
+      $.get("json/china.json", function (res) {
+        console.log(res);
+        // 地图注册 就是注册名称
+        echarts.registerMap("chinaMap", res);
+        // 设置图表的配置项
+        let option = {
+          geo: {
+            type: "map", //设置图表类型
+            map: "chinaMap", //需与上面echarts.registerMap方法的第一个参数保持一致
+            roam: true, //设置缩放和拖动
+            // 里面的文字显示
+            label: {
+              show: true,
+            },
+            zoom: 1, // 设置初始化的缩放比例
+            center: [116.405285, 39.904989], //设置地图中心点
+          },
+          series: [
+            {
+              data: airData,
+              geoIndex: 0, //将空气质量数据跟第0个geo配置关联在一起
+              type: "map",
+            },
+            {
+              data: scatterData, //涟漪动画的散点数据
+              type: "effectScatter",
+              coordinateSystem: "geo",
+              rippleEffect: {
+                scale: 10,
+              },
+            },
+          ],
+          visualMap: {
+            min: 0,
+            max: 300,
+            inRange: {
+              color: ["white", "red"], //控制颜色渐变的范围
+            },
+            calculable: true,
+          },
+        };
+        //生成图表（地图）
+        myChart.setOption(option);
+      });
+    </script>
+  </body>
+</html>
+```
+
+## 7. 雷达图
+
+https://echarts.apache.org/zh/option.html#radar
+
+> radar 代表雷达图
+
+- indicator 代表最大值
+- 在 series 下的 data 配置数据
+- areaStyle 雷达图形成阴影的面积
+- shape circle 外层的图形为圆的 polygon 默认
+
+## 8.仪表盘图
+
+https://echarts.apache.org/zh/option.html#series-gauge
+
+> gauge 仪表盘图
+
+- min max 控制仪表盘数值范围
+
+## 9. 总结
+
+![avatar](D:\study\practice\Practice2\component\echarts\image\总结1.png)
+![avatar](D:\study\practice\Practice2\component\echarts\image\总结2.png)
+![avatar](D:\study\practice\Practice2\component\echarts\image\总结3.png)
+![avatar](D:\study\practice\Practice2\component\echarts\image\总结4.png)
+![avatar](D:\study\practice\Practice2\component\echarts\image\总结5.png)
+![avatar](D:\study\practice\Practice2\component\echarts\image\总结6.png)
+
+### 七大图表特点
+
+> 1. 柱状图描述的是分类数据，呈现的是每一个分类中有多少
+> 2. 折线图使用场景常用来分析数据随时间的变化趋势
+> 3. 散点图可以帮助我们推断出不同纬度数据之间的相关性，可以用在地图上的标注上
+> 4. 地图主要可以帮助我们从宏观的角度快速看出不同地理位置上数据的差异
+> 5. 饼图可以更好地帮助用户快速了解不同分类的数据的占比情况
+> 6. 雷达图可以用来分析多个纬度的数据与标准数据的对比情况
+> 7. 仪表盘可以更直观的表现出摸个指标的进度或实际情况
+

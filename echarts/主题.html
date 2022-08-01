@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- 补全视口标签 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+    content="width=device-width,user-scalable=no, initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+  <title>市井皆是温柔,弄堂藏匿浪漫</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"
+    integrity="sha256-oZEaXgWqxLmr12VzCK9eGOuHIi3XPZ/KsJXXFjtyvZA=" crossorigin="anonymous"></script>
+  <script src="./lib/purple-passion.js"></script>
+</head>
+
+<body>
+  <div id="main" style="width: 600px;height: 400px;">
+
+  </div>
+  <script>
+    // 基于准备好的dom，初始化echarts实例
+    //light 湖蓝 dark背景深蓝 内置主题   还有个自定义主题 'purple-passion'
+    var myChart = echarts.init(document.getElementById('main'));
+    var xDataArr = ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+    var yDataArr = [5, 20, 36, 10, 10, 20]
+    // 指定图表的配置项和数据
+    var option = {
+      //类目轴  直角坐标系中的x轴
+      xAxis: {
+        data: xDataArr
+      },
+      //数值轴  直角坐标系中的y轴
+      yAxis: {},
+      // 系列列表  每个系列通过type决定自己的图表类型
+      series: [
+        {
+          name: '销量',
+          type: 'bar',//bar代表柱状图
+          data: yDataArr,
+          barWidth: '30%',
+          // 渐变色
+          // itemStyle: {
+          //   color: {   //线性渐变
+          //     type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{
+          //       offset: 0, color: 'pink' // 0% 处的颜色 
+          //     }, {
+          //       offset: 1, color: 'skyblue'  // 100% 处的颜色
+          //     }], globalCoord: false // 缺省为 false
+          //   }
+          // }
+          itemStyle: {
+            color: {  //径向渐变
+              //原心点  半径的位置
+              type: 'radial', x: 0.5, y: 0.5, r: 0.5, colorStops: [{
+                offset: 0, color: 'pink'// 0% 处的颜色 
+              }, {
+                offset: 1, color: 'skyblue'// 100% 处的颜色 
+              }], global: false // 缺省为 false
+            }
+          }
+
+
+        },
+      ]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+  </script>
+</body>
+
+</html>

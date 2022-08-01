@@ -10,12 +10,13 @@
   <title>市井皆是温柔,弄堂藏匿浪漫</title>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"
     integrity="sha256-oZEaXgWqxLmr12VzCK9eGOuHIi3XPZ/KsJXXFjtyvZA=" crossorigin="anonymous"></script>
+    <script src="./lib/purple-passion.js"></script>
 </head>
 
 <body>
   <div id="main" style="width: 600px;height:400px"></div>
   <script>
-    var myChart = echarts.init(document.getElementById('main'));
+    var myChart = echarts.init(document.getElementById('main'),'purple-passion');
     var pieData = [
       {
         name: "淘宝",
@@ -40,6 +41,9 @@
     ]
     // 指定图表的配置项和数据
     var option = {
+      //调色盘的作用遵循就近原则
+      // 全局调色盘
+      // color:['skyblue','pink','teal','purple','yellow'],
       series: [
         {
           type: 'pie',
@@ -47,15 +51,17 @@
           label: {
             show: true,
             formatter: function (arg) {
-              return arg.name + '平台' + arg.value+'元\n'+ arg.percent+'%'
+              return arg.name + '平台' + arg.value + '元\n' + arg.percent + '%'
             }
-          }
+          },
+          // radius:20,
+          roseType: 'radius',
+          selectedMode: 'multiple'
         }
       ]
     };
     // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option);
-
 
   </script>
 </body>

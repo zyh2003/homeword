@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- 补全视口标签 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+    content="width=device-width,user-scalable=no, initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+  <title>市井皆是温柔,弄堂藏匿浪漫</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body> 
+  <div id="main" style="width: 600px;height:400px"></div>
+  <button id="btn1">触发行为</button>
+  <button id="btn2">clear</button>
+  <button id="btn3">setOption</button>
+  <button id="btn4">dispose</button>
+  <script>
+    var myChart = echarts.init(document.getElementById('main'));
+    var pieData = [
+      {
+        name: "淘宝",
+        value: 11231
+      },
+      {
+        name: "京东",
+        value: 22673
+      },
+      {
+        name: "唯品会",
+        value: 6123
+      },
+      {
+        name: "1号店",
+        value: 8989
+      },
+      {
+        name: "聚美优品",
+        value: 6700
+      }
+    ]
+    // 指定图表的配置项和数据
+    var option = {
+      legend: {
+        data: ['淘宝', '京东', '唯品会', '1号店', '聚美优品']
+      },
+      tooltip: {
+        show: true,
+      },
+      //调色盘的作用遵循就近原则
+      // 全局调色盘
+      // color:['skyblue','pink','teal','purple','yellow'],
+      series: [
+        {
+          type: 'pie',
+          data: pieData,
+          label: {
+            show: true,
+            formatter: function (arg) {
+              return arg.name + '平台' + arg.value + '元\n' + arg.percent + '%'
+            }
+          },
+          // radius:20,
+          roseType: 'radius',
+          selectedMode: 'multiple'
+        }
+      ]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+    //监听点击获取到点击数据信息
+    myChart.on('click', function (arg) {
+      console.log(arg);
+    })
+    //解绑点击事件
+    myChart.off('click')
+    //获取到点击legend时的数据  
+    myChart.on('legendselectchanged', function (arg) {
+      console.log(arg);
+    })
+    $('#btn1').click(function(){
+      myChart.dispatchAction({
+        type:'highlight',//事件类型
+        //series 的哪一项
+        seriesIndex:0,//系列索引  意思就是第几个图表
+        dataIndex:1 //图表哪一项高亮
+      })
+      myChart.dispatchAction({
+        type:'showTip',//事件类型
+        //series 的哪一项
+        seriesIndex:0,//系列索引  意思就是第几个图表
+        dataIndex:1 //图表哪一项高亮
+      })
+    })
+    //clear可以恢复，但是dispose 恢复不了
+    $('#btn2').click(function(){
+      //清空图表实例
+      myChart.clear()
+    })
+    $('#btn3').click(function(){
+      //
+      myChart.setOption(option)
+    })
+    $('#btn4').click(function(){
+      //销毁
+      myChart.dispose()
+    })
+  </script>
+</body>
+
+</html>

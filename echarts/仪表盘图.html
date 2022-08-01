@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- 补全视口标签 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+    content="width=device-width,user-scalable=no, initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+  <title>市井皆是温柔,弄堂藏匿浪漫</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.3/echarts.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+
+  <div id="main" style="width: 600px;height: 400px;">
+    <script>
+      var myChart = echarts.init(document.getElementById('main'), 'dark');
+      var option = {
+        series: [
+          {
+            type: 'gauge',
+            data: [
+              {
+                value: 97,
+                itemStyle: { // 指针的样式
+                  color: 'pink' // 指针的颜色
+                }
+              }, // 每一个对象就代表一个指针
+              {
+                value: 85,
+                itemStyle: {
+                  color: 'green'
+                }
+              }
+            ],
+            min: 50 // min max 控制仪表盘数值范围
+          }
+        ]
+      }
+      myChart.setOption(option);
+
+    </script>
+</body>
+
+</html>
