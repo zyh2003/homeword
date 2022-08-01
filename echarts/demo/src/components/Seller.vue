@@ -1,18 +1,212 @@
 <!--商家销量统计的横向柱状图-->
 <template>
-  <div class="seller">
-    <div class="seller-content"></div>
+  <div class="com-container">
+    <div class="com-chart" ref="seller_ref"></div>
   </div>
 </template>
 
 <script>
+import seller from '@/data/seller.json'
 export default {
   data() {
-    return {}
+    return {
+      chartInstance: null,
+      sellerList: null,
+      currentPage: 1, // 当前显示的页数
+      totalPage: 0, // 一共有多少页
+      timerId: null // 定时器的标识
+    }
   },
-  methods: {},
+  methods: {
+    /**
+     * 初始化echartsInstance对象
+     */
+    initChart() {
+      // 因为这个是dom元素加载完毕后才获取的，所以调用放在mounted里
+      this.chartInstance = this.$echarts.init(this.$refs.seller_ref, 'chalk')
+      // 对图表初始化配置的控制
+      const initOption = {
+        title: {
+          text: '▎商家销售统计',
+          left: 20,
+          top: 20
+        },
+        grid: {
+          top: '20%',
+          left: '3%',
+          right: '6%',
+          bottom: '3%',
+          // 这边设置的%不包含坐标轴上的文字如果要包含的话设置下面属性
+          containLabel: true
+        },
+        xAxis: {
+          type: 'value'
+        },
+        yAxis: {
+          type: 'category'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'line',
+            z: 0,
+            lineStyle: {
+              color: '#2D3443'
+            }
+          }
+        },
+        series: [
+          {
+            type: 'bar',
+            label: {
+              show: true,
+              position: 'right',
+              textStyle: {
+                color: 'white'
+              }
+            },
+            itemStyle: {
+              // 指明颜色渐变的方向
+              // 指明不同百分比之下的颜色的值
+              color: new this.$echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                // 百分之0状态下的颜色值
+                {
+                  offset: 0,
+                  color: '#5052EE'
+                },
+                // 百分之百状态下的颜色值
+                {
+                  offset: 1,
+                  color: '#AB6EE5'
+                }
+              ])
+            }
+          }
+        ]
+      }
+
+      this.chartInstance.setOption(initOption)
+      // 对图表对象进行鼠标事件的监听
+      // 鼠标移入图表停止
+      this.chartInstance.on('mouseover', () => {
+        clearInterval(this.timerId)
+      })
+      // 鼠标移出图表开始
+      this.chartInstance.on('mouseout', () => {
+        this.startInterval()
+      })
+    },
+    /**
+     * 获取数据
+     */
+    getData() {
+      // 因为获取到的是params对象，所以使用await更快解析
+      this.sellerList = seller
+      // console.log(this.sellerList)
+      // 对数组进行排序
+      this.sellerList.sort((a, b) => {
+        return a.value - b.value // 从小到大 从大到小b-a
+      })
+      // 每5个元素显示一页       数据是否能被5整除
+      this.totalPage =
+        this.sellerList.length % 5 === 0
+          ? this.sellerList.length / 5
+          : this.sellerList.length / 5 + 1
+      this.updataChart()
+      // 启动定时器
+      this.startInterval()
+    },
+    /**
+     * 更新图表
+     */
+    updataChart() {
+      // 开始索引
+      const start = (this.currentPage - 1) * 5
+      // 结束索引
+      const end = this.currentPage * 5
+      // 这个就是分页数据
+      const showData = this.sellerList.slice(start, end)
+      const sellerNames = showData.map((item) => {
+        return item.name
+      })
+      const sellerValues = showData.map((item) => {
+        return item.value
+      })
+      const dataOption = {
+        yAxis: {
+          data: sellerNames
+        },
+        series: [
+          {
+            data: sellerValues
+          }
+        ]
+      }
+      this.chartInstance.setOption(dataOption)
+    },
+    /**
+     * 每3秒切换页面
+     */
+    startInterval() {
+      // 存在的话先取消下
+      if (this.timerId) {
+        clearInterval(this.timerId)
+      }
+      this.timerId = setInterval(() => {
+        this.currentPage++
+        if (this.currentPage > this.totalPage) {
+          this.currentPage = 1
+        }
+        // 调用这个是因为实时更新分页的数据
+        this.updataChart()
+      }, 3000)
+    },
+    /**
+     * 当浏览器大小发生变化的时候，会调用的方法，未完成屏幕的适配
+     */
+    screenAdapter() {
+      const titleFontSize = (this.$refs.seller_ref.offsetWidth / 100) * 3.6
+      // 和分辨率大小相关的配置项
+      const adapterOption = {
+        title: {
+          textStyle: {
+            fontSize: titleFontSize
+          }
+        },
+        tooltip: {
+          axisPointer: {
+            lineStyle: {
+              width: titleFontSize
+            }
+          }
+        },
+        series: [
+          {
+            barWidth: titleFontSize,
+            itemStyle: {
+              barBorderRadius: [0, titleFontSize / 2, titleFontSize / 2, 0]
+            }
+          }
+        ]
+      }
+      this.chartInstance.setOption(adapterOption)
+      // 手动调用图表对象的resize才能产生效果
+      this.chartInstance.resize()
+    }
+  },
   created() {},
-  mounted() {},
+  mounted() {
+    this.initChart()
+    this.getData()
+    window.addEventListener('resize', this.screenAdapter)
+    // 在页面加载完成的时候，主动进行屏幕的适配
+    this.screenAdapter()
+  },
+  destroyed() {
+    clearInterval(this.timerId)
+    // 在组件销毁的时候，需要监听器取消掉
+    window.removeEventListener('resize', this.screenAdapter)
+  },
   components: {},
   computed: {},
   watch: {}

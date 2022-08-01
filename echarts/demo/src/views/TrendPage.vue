@@ -1,14 +1,11 @@
-<!-- 针对 /sellerpage 这条路径而显示出来的
-在这个组件中，通过子组件注册的方式，要显示出Seller.vue这个组件
-  -->
 <template>
   <div class="com-page">
-    <seller></seller>
+    <trend></trend>
   </div>
 </template>
 
 <script>
-import Seller from '@/components/Seller.vue'
+import Trend from '@/components/Trend.vue'
 export default {
   data() {
     return {}
@@ -16,7 +13,7 @@ export default {
   methods: {},
   created() {},
   mounted() {},
-  components: { Seller },
+  components: { Trend },
   computed: {},
   watch: {}
 }
